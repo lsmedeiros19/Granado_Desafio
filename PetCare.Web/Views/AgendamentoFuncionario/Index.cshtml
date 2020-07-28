@@ -2,15 +2,10 @@
 <div class="masthead">
     <div class="container d-flex flex-column">
 
-        @*<form class="form-inline md-form mr-auto mb-4">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
-            </form>*@
-
         <div class='form-row'>
             <div class="input-group date col-md-4">
                 <label>Data da Consulta</label>
-                <input type="datetime-local" class="form-control" id="DataConsulta">
+                <input type="datetime-local" class="form-control" id="DataConsulta" value="@DateTime.Now.ToString("dd/MM/yyyy")">
                 <div class="input-group-addon">
                     <span class="glyphicon glyphicon-th"></span>
                 </div>
@@ -18,7 +13,7 @@
         </div>
         <div class="form-group">
             <label for="lblVeterinario" class="col-form-label">Veterinário</label>
-            <select class="browser-default custom-select col-md-4">
+            <select class="browser-default custom-select col-md-4" id="Veterinario">
                 <option selected></option>
                 @foreach (var item in Model)
                 {
@@ -35,8 +30,9 @@
 
         <div id="list" class="row">
             <div class="table-responsive col-md-12">
-                <table class="table table-striped" cellspacing="0" cellpadding="0">
+                <table class="table table-striped" cellspacing="0" cellpadding="0" id="TabelaHorariosAgendados" style="display: none">
                     <thead>
+                        <tr>Horários Agendados</tr>
                         <tr>
                             <th>Cliente</th>
                             <th>Nome Animal</th>
@@ -48,75 +44,40 @@
                         </tr>
                     </thead>
                     <tbody>
-
-                        <tr>
-                            <td>Penelope Charmosa</td>
-                            <td>Tom Tom</td>
-                            <td>Cachorro</td>
-                            <td>22/07/2020</td>
-                            <td>11:30</td>
-                            <td>Pernalonga</td>
-                            <td class="actions">
-                                <button type="button" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modalAgendamentoFuncionário">Editar</button>
-                            </td>
-                        </tr>
-
                     </tbody>
                 </table>
 
             </div>
         </div>
 
-        <div class="modal fade" id="modalAgendamentoFuncionário" tabindex="-1" role="dialog" aria-labelledby="modalAgendamentoFuncionário" aria-hidden="true">
+
+        <div class="modal fade" id="modalAgendamentoFuncionario" tabindex="-1" role="dialog" aria-labelledby="modalAgendamentoFuncionario" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="modalAgendamentoFuncionárioLabel">Alteração do Agendamento</h5>
+                        <h5 class="modal-title" id="modalAgendamentoFuncionárioLabel">Concluir Atendimento</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form>
-                        <div class="form-group">
-                            <label for="txtNomeCliente" class="col-form-label">Cliente</label>
-                            <input type="text" class="form-control" id="txtNomeCliente" />
-                        </div>
-                        <div class="form-group">
-                            <label for="txtpet" class="col-form-label">Nome do Animal</label>
-                            <input type="text" class="form-control-sm" id="txtpet" />
-                        </div>
-                        <div class="form-group">
-                            <label for="txtidade" class="col-form-label">Animal</label>
-                            <select class="browser-default custom-select">
-                                <option selected></option>
-                                <option value="1">Cachorro</option>
-                                <option value="2">Gato</option>
-                                <option value="3">Hamster</option>
-                            </select>
-                        </div>
-                        <div class="input-group date col-md-4">
-                            <label>Data da Consulta</label>
-                            <input type="datetime-local" class="form-control" id="DataConsulta">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-th"></span>
+                    <div class="modal-body">
+                        <form id="formModalAnimal">
+                            <div class="form-group">
+                                <label for="NomeAnimal" class="col-form-label">Nome</label>
+                                <input type="text" class="form-control" id="NomeAnimal" />
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="lblVeterinario" class="col-form-label">Veterinário</label>
-                            <select class="browser-default custom-select col-md-4">
-                                <option selected></option>
-                                <option value="1">Godofredo Silva</option>
-                                <option value="2">Patolino</option>
-                                <option value="3">Pernalonga</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="txthistorico" class="col-form-label">Diagnóstico</label>
-                            <input type="text" class="form-control-plaintext" id="txtpet" />
-                        </div>
-                    </form>
+                            <div class="input-group date col-md-4">
+                                <label for="txtDataConsulta" class="col-form-label">Data da Consulta</label>
+                                <input type="text" class="form-control" id="txtDataConsulta" />
+                            </div>
+                            <div class="form-group">
+                                <label for="txtDiagnostico" class="col-form-label">Diagnostico</label>
+                                <input type="text" class="form-control" id="txtDiagnostico" />
+                            </div>
+                        </form>
+                    </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Salvar</button>
+                        <input type="button" class="btn btn-primary" value="Salvar" onclick="AdcionarAnimal()" id="SalvarAnimal" />
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
@@ -135,7 +96,7 @@
     var veterinario = $("#Veterinario").val();
 
         var settings = {
-            "url": '@Url.Action("ConsultaAgendaDisponivel", "Agendamento")?' + `idAnimal=${idAnimal}&dataAgendamento=${dataConsulta}&idVeterinario=${veterinario}`,
+            "url": '@Url.Action("ConsultaAgendamentosMarcados", "Agendamento")?' + `dataAgendamento=${dataConsulta}&idVeterinario=${veterinario}`,
     "method": "GET",
     "timeout": 0,
     "headers": {
@@ -143,6 +104,37 @@
             },
 
         };
+        $.ajax(settings).done(function (response) {
+            CarregarTabela(response);
+        });
+    })
 
+        function CarregarTabela(model) {
+            var tabela = $("#TabelaHorariosAgendados");
+            var tbody = $("#TabelaHorariosAgendados tbody");
+            var trs = '';
+
+            for (var i = 0; i < model.length; i++) {
+                trs += `<tr>
+                                        <td>${model[i].NomeCliente}</td>
+                                        <td>${model[i].NomeAnimal}</td>
+                                        <td>${model[i].TipoAnimal}</td>
+                                        <td>${model[i].DataAtendimento}</td>
+                                        <td>${model[i].DataAtendimento}</td>
+                                        <td>${model[i].NomeVeterinario}</td>
+                                        <th>
+                                            <div class="col-md-3"><a  onclick="modalAgendamentoFuncionario()" class="btn btn-warning btn-xs">Editar</a></div>
+                                        </th>
+                                   </tr>`
+
+            }
+
+            tbody.html(trs);
+            tabela.show();
+        }
+
+        function modalAgendamentoFuncionario() {
+            $('#modalAgendamentoFuncionario').modal('show');
+        }
     </script>
 }
