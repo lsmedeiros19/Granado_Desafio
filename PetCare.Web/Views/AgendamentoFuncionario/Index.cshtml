@@ -22,8 +22,7 @@
                 <option selected></option>
                 @foreach (var item in Model)
                 {
-    <option value="@item.Id">@item.Nome</option>
-}
+    <option value="@item.Id">@item.Nome</option>}
             </select>
         </div>
         <div class="form-row">
@@ -126,10 +125,9 @@
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
     <script type="text/javascript">
 
-        var idAnimal = '@Model.Animal.Id'
 
     $('#Buscar').click(function () {
 
@@ -146,4 +144,5 @@
 
         };
 
-</script>
+    </script>
+}
