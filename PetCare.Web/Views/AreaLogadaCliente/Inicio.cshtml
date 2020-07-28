@@ -1,37 +1,33 @@
 ﻿@model PetCare.Web.ViewModels.ClienteAnimalVieModel
 <div class="masthead">
     <div class="container d-flex flex-column">
-        <div id="list" class="row">
-            <div class="table-responsive col-md-12">
-                <table class="table table-striped" cellspacing="0" cellpadding="0" align="center">
-                    <thead>
-                        <tr></tr>
+        <div class="row">
 
-                        <tr>
-                            <th>
-                                @foreach (var item in Model.Animais)
-                                {
-                    <div class="card" style="width: 18rem;">
-                        <img class="card-img-top" src="..." alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">@item.Nome</h5>
-                            <p class="card-subtitle">@item.Tipo</p>
-                            <p class="card-text">@item.Idade</p>
-                            <table align="center">
-                                <tr>
-                                    <th><a onclick="agendarAnimal(@item.Id)" class="btn btn-primary">AG</a></th>
-                                    <th><a href="#" class="btn btn-primary">Hist</a></th>
-                                    <th><a href="#" class="btn btn-primary">Alt</a></th>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>}
-                            </th>
-                        </tr>
-                    </thead>
+            @foreach (var item in Model.Animais)
+            {
+
+        <div class="card col-sm-4" style="width: 18rem;">
+            @switch (item.Tipo)
+            {
+                case PetCare.Domain.Enums.eTipoAnimal.Cachorro:
+        <img class="card-img-top" src="~/assets/img/cao.png" alt="Card image cap"> break;
+    case PetCare.Domain.Enums.eTipoAnimal.Gato:
+        <img class="card-img-top" src="~/assets/img/gato.png" alt="Card image cap"> break;
+    case PetCare.Domain.Enums.eTipoAnimal.Hamster:
+        <img class="card-img-top" src="~/assets/img/hamster.png" alt="Card image cap">break;
+}
+
+            <div class="card-body">
+                <h5 class="card-title">Pet: @item.Nome</h5>
+                <p class="card-subtitle">Tipo: @item.Tipo</p>
+                <p class="card-text">Idade: @item.Idade</p>
+                <table align="center">
+                    <tr>
+                        <th><a onclick="agendarAnimal(@item.Id)" class="btn btn-primary">Agendar</a></th>
+                    </tr>
                 </table>
-                <br />
             </div>
+        </div>}
         </div>
     </div>
 </div>
@@ -40,11 +36,8 @@
     <script type="text/javascript">
 
         function agendarAnimal(idAnimal) {
-         
-                var url = '@Url.Action("Index", "AgendamentoCliente", new { id = "-1" })';
-
+           var url = '@Url.Action("Index", "AgendamentoCliente", new { id = "-1" })';
             window.location.href = url.replace("-1", idAnimal);
-         
         }
     </script>
 }
