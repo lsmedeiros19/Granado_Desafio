@@ -11,5 +11,7 @@ namespace PetCare.Domain.Service.Abstraction
         void CadastrarAtendimento(Atendimento atendimento);
 
         Task<Atendimento> ObterAtendimentoPorIdAsync(int id);
+
+        Task<IList<Dto.HistoricoAtendimentoDto>> ObterHistoricoAtendimentoDoAnimalAsync(int idAnimal);
     }
 }

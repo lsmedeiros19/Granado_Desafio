@@ -1,0 +1,63 @@
+﻿@model PetCare.Web.ViewModels.HistoricoAtendimentoViewModel
+<div class="masthead">
+    <div class="container d-flex flex-column">
+        <div class="container">
+            <div class="form-row">
+                <div class="table-responsive col-md-12">
+                    <table class="table table-striped" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>
+
+                                <th>
+                                    <div class="form-row">
+                                        <label>Animal</label>
+                                        <input type="text" class="form-control" value="@Model.NomeAnimal" readonly>
+                                    </div>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    @if (Model.Historico.Any())
+                    {
+                        <div id="historico" class="row">
+                            <h5>Horários Disponíveis</h5>
+                            <div class="table-responsive col-md-12">
+                                <table class="table table-striped" cellspacing="0" cellpadding="0" id="TabelaAgenda">
+                                    <thead>
+                                        <tr>
+                                            <th>Dia</th>
+                                            <th>Hora</th>
+                                            <th>Veterinário</th>
+                                            <th>Diagnostico</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Historico)
+                                        {
+                                            <tr>
+                                                <th>@item.Atendimento.DataAtendimento.ToString("dd/MM/yyyy")</th>
+                                                <th>@item.Atendimento.DataAtendimento.ToString("hh:mm")</th>
+                                                <th>@item.Veterinario.Nome</th>
+                                                <th>@item.Atendimento.Diagnostico</th>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                                <br />
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="mensagemAviso"  >
+                            <h5>Não encontramos atendimento para o seu pet!</h5>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

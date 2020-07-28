@@ -24,6 +24,7 @@
                 <table align="center">
                     <tr>
                         <th><a onclick="agendarAnimal(@item.Id)" class="btn btn-primary">Agendar</a></th>
+                        <th><a onclick="Historico(@item.Id)" class="btn btn-primary">Historico atendimentos</a></th>
                     </tr>
                 </table>
             </div>
@@ -37,6 +38,11 @@
 
         function agendarAnimal(idAnimal) {
            var url = '@Url.Action("Index", "AgendamentoCliente", new { id = "-1" })';
+            window.location.href = url.replace("-1", idAnimal);
+        }
+
+        function Historico(idAnimal) {
+           var url = '@Url.Action("Index", "HistoricoAtendimento", new { id = "-1" })';
             window.location.href = url.replace("-1", idAnimal);
         }
     </script>
