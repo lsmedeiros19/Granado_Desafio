@@ -21,10 +21,17 @@ namespace PetCare.Domain.Service
         {
             if (cliente != null)
             {
-                //Tratamento de Erro dos campos Obrigatórios
-                //if(cliente.Nome == "")
+                cliente.Cpf = cliente.Cpf.Trim().Replace(".", "").Replace("-", "");
 
-                //if(cliente.Cpf == "")
+                if (!Utils.ValidaCPF.IsCpf(cliente.Cpf))
+                    throw new Exception("Cpf inválido");
+
+                if (cliente.Nome.Trim() == "")
+                    throw new Exception("O nome é obrigatório");
+
+                if ((await _clienteRepository.GetFirstAsync(x => cliente.Cpf.Trim() == x.Cpf.Trim())) != null)
+                    throw new Exception("Cpf já cadastrado");
+                
 
                 cliente.DataCadastro = DateTime.Now;
 
@@ -42,7 +49,7 @@ namespace PetCare.Domain.Service
             Cliente cliente = new Cliente();
             if (cpf != "")
                 cliente = await _clienteRepository.GetFirstAsync(x => x.Cpf == cpf);
-            
+
             return cliente;
         }
 
@@ -54,6 +61,6 @@ namespace PetCare.Domain.Service
 
             return cliente;
         }
-        
+
     }
 }

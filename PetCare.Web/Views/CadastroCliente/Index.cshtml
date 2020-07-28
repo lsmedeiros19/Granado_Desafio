@@ -20,9 +20,7 @@
                     <button type="button" id="btnIncluirAnimal" class="btn btn-outline-dark align-bottom float-right" data-toggle="modal" data-target="#modalAnimal">+ Incluir Animal</button>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="lblMensagemErro" id="lblMensagemErro" class="col-form-label"></label>
-            </div>
+           
         </form>
         <div id="listaAnimal">
 
@@ -45,6 +43,7 @@
 
         <div class="form-row">
             <div class="form-group col-md-12">
+                    <label for="lblMensagemErro" id="lblMensagemErro" class="col-form-label" style="color:red"></label>
                 <br />
                 <input type="button" class="btn btn-primary float-right" value="Salvar Cadatro" id="Salvar" />
                 <br />
@@ -69,7 +68,7 @@
                         </div>
                         <div class="form-group">
                             <label for="txtidade" class="col-form-label">Idade</label>
-                            <input type="number" class="form-control" id="IdadeAnimal" />
+                            <input type="number" min="0" max="30" class="form-control" id="IdadeAnimal" />
                         </div>
                         <div class="form-group">
                             <label for="txtidade" class="col-form-label">Animal</label>
@@ -144,10 +143,16 @@
         }
 
     $('#Salvar').click(function () {
-
+        $("#lblMensagemErro").text('');
         var cpf = $("#Cpf").val();
         var nomeCliente = $("#Nome").val();
         var cliente = { "Nome": nomeCliente, "Cpf": cpf }
+
+        if (pets.length == 0) {
+            $("#lblMensagemErro").text('É necessario informar o seu pet');
+            return;
+        }
+
 
         var settings = {
             "url": '@Url.Action("CadastrarCliente", "Cliente")',
@@ -163,6 +168,8 @@
         $.ajax(settings).done(function (response) {
             console.log(response);
             SalvarAnimal(response.Id);
+        }).fail(function (response) {
+            $("#lblMensagemErro").text(response.responseText);
         });
     })
 
@@ -185,10 +192,7 @@
             $.ajax(settings).done(function (response) {
                 var url = '@Url.Action("Inicio", "AreaLogadaCliente", new { id = "-1" })';
                 window.location.href = url.replace("-1", idCliente);
-            }).fail(function (response) {
-                $("#lblMensagemErro").text(response);
-            }
-            );
+            });
         }
 
         function ExcluirAnimal(key) {

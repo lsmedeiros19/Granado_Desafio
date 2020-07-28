@@ -21,19 +21,16 @@ namespace PetCare.Web.Controllers.API.v1
         [HttpPost]
         public async Task<IActionResult> CadastrarCliente([FromBody] Cliente cliente)
         {
-            Cliente clienteCriado = new Cliente();
-
-            //Verificar CPF existente
-            var Cli = await _clienteService.ObterClientePorCpfAsync(cliente.Cpf);
-
-            if (Cli == null)
+            try
             {
+                Cliente clienteCriado = new Cliente();
+
                 clienteCriado = await _clienteService.CadastrarCliente(cliente);
                 return CreatedAtRoute(nameof(ObterClientePorId), new { id = clienteCriado.Id }, clienteCriado);
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest("Cliente Existente");
+                return BadRequest(ex.Message);
             }
         }
 
