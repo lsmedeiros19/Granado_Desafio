@@ -8,7 +8,7 @@ namespace PetCare.Domain.Service.Abstraction
 {
     public interface IAtendimentoService
     {
-        void CadastrarAtendimento(Atendimento atendimento);
+        Task CadastrarAtendimento(Atendimento atendimento);
 
         Task<Atendimento> ObterAtendimentoPorIdAsync(int id);
 

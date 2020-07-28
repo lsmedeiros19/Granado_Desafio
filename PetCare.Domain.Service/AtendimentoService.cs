@@ -21,10 +21,14 @@ namespace PetCare.Domain.Service
             _veterinarioRepository = veterinarioRepository;
         }
 
-        public void CadastrarAtendimento(Atendimento atendimento)
+        public async Task CadastrarAtendimento(Atendimento atendimento)
         {
             if (atendimento != null)
-                _atendimentoRepository.InsertAsync(atendimento);
+            {
+                atendimento.DataCadastro = DateTime.Now;
+
+                await _atendimentoRepository.InsertAsync(atendimento);
+            }
         }
 
         public async Task<Atendimento> ObterAtendimentoPorIdAsync(int id)
