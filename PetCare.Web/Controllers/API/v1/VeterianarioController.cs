@@ -25,5 +25,13 @@ namespace PetCare.Web.Controllers.API.v1
 
             return Ok(vet);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> ExcluirVeterinario([FromRoute] int id)
+        {
+            await _veterianarioService.ExcluirVeterinarioAsync(id);
+
+            return Ok();
+        }
     }
 }

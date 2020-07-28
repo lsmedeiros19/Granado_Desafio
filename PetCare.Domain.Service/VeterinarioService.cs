@@ -28,11 +28,6 @@ namespace PetCare.Domain.Service
         {
             if (veterinario != null)
             {
-                //Tratamento de Erro dos campos Obrigatórios
-                //if (veterinario.Nome == "")
-
-                //if (veterinario.DataContratacao == null)
-
                 veterinario.DataContratacao = DateTime.Now;
                 veterinario.DataCadastro = DateTime.Now;
                 await _veterinarioRepository.InsertAsync(veterinario);
@@ -40,10 +35,11 @@ namespace PetCare.Domain.Service
             return veterinario;
         }
 
-        public IList<AgendaDisponivelDTO> ListarVeterinarioDisponivel()
+        public async Task ExcluirVeterinarioAsync(int id)
         {
-            throw new NotImplementedException();
+            await _veterinarioRepository.DeleteAsync(id);
         }
+ 
 
         public async Task<IList<Veterinario>> ListaVeterinarioAsync()
         {
