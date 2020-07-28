@@ -29,18 +29,19 @@ namespace PetCare.Domain.Service
             _clientesRepository = clienteRepository;
         }
 
-        public void CadastrarAgendamento(Agendamento agendamento)
+        public async Task CadastrarAgendamento(Agendamento agendamento)
         {
             if (agendamento != null)
             {
-                //if (agendamento.IdAnimal == null)
-                //    throw new Exception("mensagem");
+                if (!(await VerificaAtendimentoMaximoDoHorarioAsync(agendamento.DataConsulta)))
+                    throw new Exception("Numero maximo de atendimento foi atingido, favor escolher outro horario");
 
-                //if (agendamento.IdVeterinario == null)
+                if (!(await VerificaVeterinarioDisponivelAsync(agendamento.DataConsulta, agendamento.IdVeterinario)))
+                    throw new Exception("O veterinario solicitado está ocupado para o horario selecionado");
 
                 agendamento.DataCadastro = DateTime.Now;
 
-                _agendamentoRepository.InsertAsync(agendamento);
+                await _agendamentoRepository.InsertAsync(agendamento);
             }
         }
 
@@ -89,7 +90,7 @@ namespace PetCare.Domain.Service
         {
             IList<Veterinario> veterinarios = new List<Veterinario>();
 
-            DateTime dataConsulta = dataAgendamento.HasValue ? dataAgendamento.Value : DateTime.Now;
+            DateTime dataConsulta = dataAgendamento.HasValue ? dataAgendamento.Value.Date : DateTime.Now.Date;
 
             if (!idVeterinario.HasValue)
                 veterinarios = await _veterinarioRepository.GetAsync();
@@ -105,7 +106,7 @@ namespace PetCare.Domain.Service
 
             foreach (var vet in veterinarios)
             {
-                var agendaOcupadaVet = await _agendamentoRepository.GetAsync(x => x.DataConsulta == dataConsulta && x.IdVeterinario == vet.Id);
+                var agendaOcupadaVet = await _agendamentoRepository.GetAsync(x => x.DataConsulta.Date == dataConsulta.Date && x.IdVeterinario == vet.Id);
 
                 var horarioMarcados = agendaOcupadaVet.Select(x => x.DataConsulta.ToString("HH:mm")).Distinct();
 
@@ -116,7 +117,7 @@ namespace PetCare.Domain.Service
                     Dia = dataConsulta.ToString("dd/MM/yyyy")
                 };
 
-                horarioDisponivelVet.HorariosDiponiveis.ToList().RemoveAll(x => horarioMarcados.Contains(x));
+                horarioDisponivelVet.HorariosDiponiveis = horarioDisponivelVet.HorariosDiponiveis.Where(x =>  !horarioMarcados.Contains(x)).ToList();
 
                 listaVetDisponivel.Add(horarioDisponivelVet);
 
@@ -129,7 +130,7 @@ namespace PetCare.Domain.Service
             var listaDeHorarios = new List<string>();
             var date = DateTime.ParseExact("2010-01-01 09:00:00", "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
-            for (int i = 0; i < 20; i++)
+            for (int i = 0; i < 19; i++)
             {
                 listaDeHorarios.Add(date.ToString("HH:mm"));
                 date = date.AddMinutes(30);
@@ -137,5 +138,26 @@ namespace PetCare.Domain.Service
 
             return listaDeHorarios;
         }
+
+        private async Task<bool> VerificaAtendimentoMaximoDoHorarioAsync(DateTime dataAgendamento)
+        {
+            var qtdAtendimento = (await _agendamentoRepository.GetAsync(x => x.DataConsulta == dataAgendamento)).Count();
+
+            if (qtdAtendimento >= 3)
+                return false;
+            else
+                return true;
+        }
+
+        private async Task<bool> VerificaVeterinarioDisponivelAsync(DateTime dataAgendamento, int idVeterinario)
+        {
+            var qtdAtendVeterinario = (await _agendamentoRepository.GetAsync(x => x.DataConsulta == dataAgendamento && x.IdVeterinario == idVeterinario)).Count();
+
+            if (qtdAtendVeterinario >= 1)
+                return false;
+            else
+                return true;
+        }
+
     }
 }

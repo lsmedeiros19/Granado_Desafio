@@ -21,11 +21,19 @@ namespace PetCare.Web.Controllers.API.v1
         }
 
         [HttpPost]
-        public IActionResult CadastrarAgendamento([FromBody] Agendamento agendamento)
+        public async Task<IActionResult> CadastrarAgendamento([FromBody] Agendamento agendamento)
         {
-            _agendamentoService.CadastrarAgendamento(agendamento);
+            try
+            {
+                await _agendamentoService.CadastrarAgendamento(agendamento);
 
-            return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]

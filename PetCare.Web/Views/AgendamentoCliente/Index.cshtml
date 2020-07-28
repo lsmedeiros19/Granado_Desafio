@@ -8,7 +8,7 @@
                         <thead>
                             <tr>
                                 <th>
-
+                                    <input type="hidden" id="hdnIdAnimal" value="@Model.Animal.Id"/>
                                     <label>Cliente</label>
                                     <input type="text" class="form-control" value="@Model.Cliente.Nome" readonly>
                                 </th>
@@ -29,26 +29,28 @@
                     </table>
 
                     <div class='form-row'>
-                        <div class="input-group date col-md-4">
-                            <label>Data da Consulta</label>
-                            <input type="datetime-local" class="form-control" id="DataConsulta" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                        <div class="input-group date col-md-6">
+                            <label class="col-form-label">Data da Consulta:</label>
+                            <input type="text" readonly class="form-control" id="DataConsulta" value="@DateTime.Now.ToString("dd/MM/yyyy")">
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-th"></span>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="lblVeterinario" class="col-form-label">Veterinário</label>
-                        <select class="browser-default custom-select col-md-4" id="Veterinario">
-                            <option selected></option>
-                            @foreach (var item in Model.Veterinarios)
-                            {
-                <option value="@item.Id">@item.Nome</option>}
+                        <div class="form-group col-md-6">
+                            <label for="lblVeterinario" class="col-form-label">Veterinário:</label>
+                            <select class="browser-default custom-select col-md-4" id="Veterinario">
+                                <option selected></option>
+                                @foreach (var item in Model.Veterinarios)
+                                {
+                                    <option value="@item.Id">@item.Nome</option>
+                                }
+                            </select>
+                        </div>
 
-                        </select>
-                    </div>
 
-                    <div class="form-row">
+                    </div>
+                    <div class='form-row'>
+
                         <div class="form-group col-md-12">
                             <br />
                             <input type="button" class="btn btn-primary float-right" value="Buscar" id="Buscar" />
@@ -56,13 +58,11 @@
                         </div>
                     </div>
 
-                    <br />
-
-                    <div id="list" class="row">
+                    <div id="listHorarios" class="row" style="display:none">
+                        <h5>Horários Disponíveis</h5>
                         <div class="table-responsive col-md-12">
                             <table class="table table-striped" cellspacing="0" cellpadding="0" id="TabelaAgenda" style="display: none">
                                 <thead>
-                                    <tr>Horários Disponíveis</tr>
                                     <tr>
                                         <th>Dia</th>
                                         <th>Hora</th>
@@ -72,12 +72,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-
-
                                 </tbody>
                             </table>
                             <br />
                         </div>
+                    </div>
+                    <div id="mensagemAviso" style="display:none">
+                        <h5>Não existem resultados para a busca informada!</h5>
                     </div>
                 </div>
             </div>
@@ -92,11 +93,16 @@
 
     $('#Buscar').click(function () {
 
-    var dataConsulta = $("#DataConsulta").val();
+        var dataConsulta = $("#DataConsulta").val();
+
+        var diaSplit = dataConsulta.split("/");
+
+        var dataMesDiaAno = `${diaSplit[1]}/${diaSplit[0]}/${diaSplit[2]}`;
+
     var veterinario = $("#Veterinario").val();
 
         var settings = {
-            "url": '@Url.Action("ConsultaAgendaDisponivel", "Agendamento")?' + `idAnimal=${idAnimal}&dataAgendamento=${dataConsulta}&idVeterinario=${veterinario}`,
+            "url": '@Url.Action("ConsultaAgendaDisponivel", "Agendamento")?' + `idAnimal=${idAnimal}&dataAgendamento=${dataMesDiaAno}&idVeterinario=${veterinario}`,
     "method": "GET",
     "timeout": 0,
     "headers": {
@@ -130,15 +136,62 @@
                                     </tr>`
                 }
             }
-
-            tbody.html(trs);
-            tabela.show();
-
+            if (model.length > 0) {
+                tbody.html(trs);
+                tabela.show();
+                $("#listHorarios").show();
+                $("#mensagemAviso").hide();
+            } else {
+                $("#mensagemAviso").show();
+                tabela.hide();
+                $("#listHorarios").hide();
+            }
         }
 
         function AgendarConsulta(dia, horario, IdVeterinario) {
 
+            var idAnimal = $("#hdnIdAnimal").val()
+            var data = moment(dia + " " + horario, 'DD/MM/YYYY HH:mm');
+            debugger
+            var agendamento = {
+                IdVeterinario: IdVeterinario,
+                IdAnimal: idAnimal,
+                DataConsulta: data.format("MM/DD/YYYY HH:mm")
+            }
+
+            var settings = {
+                "url": '@Url.Action("CadastrarAgendamento", "Agendamento")',
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify(agendamento),
+            };
+
+
+            $.ajax(settings).done(function (response) {
+                Swal.fire(
+                    'Sucesso!',
+                    'Agendamento efetuado!',
+                    'success'
+                )
+                $('#Buscar').click();
+            }).fail(function (response) {
+                Swal.fire(
+                    'Ops!',
+                    response.responseText,
+                    'error'
+                )
+            });
         }
+
+        $("#DataConsulta").datepicker({
+            "setDate": new Date(),
+            "autoclose": true,
+            format: 'dd/mm/yyyy',
+        });
+
     </script>
 
 }

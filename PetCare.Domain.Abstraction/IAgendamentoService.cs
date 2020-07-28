@@ -9,7 +9,7 @@ namespace PetCare.Domain.Service.Abstraction
 {
     public interface IAgendamentoService
     {
-        void CadastrarAgendamento(Agendamento agendamento);
+        Task CadastrarAgendamento(Agendamento agendamento);
 
         Task<IList<AgendaMarcadaDto>> ListarAgendamentoDoDiaAsync(DateTime? dataAgendamento);
 
