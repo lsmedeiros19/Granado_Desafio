@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Leandro\\Documents\\Visual Studio 2019\\Projetos\\PetCare\\PetCare\\PetCare.Domain.Models\\PetCare.Domain.csproj": {}
+    "D:\\Projetos\\Leandro\\Granado_Desafio\\PetCare.Domain.Models\\PetCare.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Leandro\\Documents\\Visual Studio 2019\\Projetos\\PetCare\\PetCare\\PetCare.Domain.Models\\PetCare.Domain.csproj": {
+    "D:\\Projetos\\Leandro\\Granado_Desafio\\PetCare.Domain.Models\\PetCare.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Leandro\\Documents\\Visual Studio 2019\\Projetos\\PetCare\\PetCare\\PetCare.Domain.Models\\PetCare.Domain.csproj",
+        "projectUniqueName": "D:\\Projetos\\Leandro\\Granado_Desafio\\PetCare.Domain.Models\\PetCare.Domain.csproj",
         "projectName": "PetCare.Domain",
-        "projectPath": "C:\\Users\\Leandro\\Documents\\Visual Studio 2019\\Projetos\\PetCare\\PetCare\\PetCare.Domain.Models\\PetCare.Domain.csproj",
-        "packagesPath": "C:\\Users\\Leandro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Leandro\\Documents\\Visual Studio 2019\\Projetos\\PetCare\\PetCare\\PetCare.Domain.Models\\obj\\",
+        "projectPath": "D:\\Projetos\\Leandro\\Granado_Desafio\\PetCare.Domain.Models\\PetCare.Domain.csproj",
+        "packagesPath": "C:\\Users\\julio\\.nuget\\packages\\",
+        "outputPath": "D:\\Projetos\\Leandro\\Granado_Desafio\\PetCare.Domain.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Leandro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\julio\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

@@ -3,9 +3,9 @@
     <div class="container d-flex flex-column">
 
         @*<form class="form-inline md-form mr-auto mb-4">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
-        </form>*@
+                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+                <button class="btn aqua-gradient btn-rounded btn-sm my-0" type="submit">Search</button>
+            </form>*@
 
         <div class='form-row'>
             <div class="input-group date col-md-4">
@@ -125,3 +125,25 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        var idAnimal = '@Model.Animal.Id'
+
+    $('#Buscar').click(function () {
+
+    var dataConsulta = $("#DataConsulta").val();
+    var veterinario = $("#Veterinario").val();
+
+        var settings = {
+            "url": '@Url.Action("ConsultaAgendaDisponivel", "Agendamento")?' + `idAnimal=${idAnimal}&dataAgendamento=${dataConsulta}&idVeterinario=${veterinario}`,
+    "method": "GET",
+    "timeout": 0,
+    "headers": {
+    "Content-Type": "application/json"
+            },
+
+        };
+
+</script>
