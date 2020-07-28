@@ -1,0 +1,144 @@
+﻿@model PetCare.Web.ViewModels.AgendamentoClienteViewModel
+<div class="masthead">
+    <div class="container d-flex flex-column">
+        <div class="container">
+            <div class="form-row">
+                <div class="table-responsive col-md-12">
+                    <table class="table table-striped" cellspacing="0" cellpadding="0">
+                        <thead>
+                            <tr>
+                                <th>
+
+                                    <label>Cliente</label>
+                                    <input type="text" class="form-control" value="@Model.Cliente.Nome" readonly>
+                                </th>
+                                <th>
+                                    <div class="form-row">
+
+                                        <label>Animal</label>
+                                        <input type="text" class="form-control" value="@Model.Animal.Nome" readonly>
+
+                                    </div>
+                                </th>
+                                <th>
+                                    <label>Idade</label>
+                                    <input type="text" class="form-control" value="@Model.Animal.Idade" readonly>
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                    <div class='form-row'>
+                        <div class="input-group date col-md-4">
+                            <label>Data da Consulta</label>
+                            <input type="datetime-local" class="form-control" id="DataConsulta" value="@DateTime.Now.ToString("dd/MM/yyyy")">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lblVeterinario" class="col-form-label">Veterinário</label>
+                        <select class="browser-default custom-select col-md-4" id="Veterinario">
+                            <option selected></option>
+                            @foreach (var item in Model.Veterinarios)
+                            {
+                <option value="@item.Id">@item.Nome</option>}
+
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <br />
+                            <input type="button" class="btn btn-primary float-right" value="Buscar" id="Buscar" />
+                            <br />
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div id="list" class="row">
+                        <div class="table-responsive col-md-12">
+                            <table class="table table-striped" cellspacing="0" cellpadding="0" id="TabelaAgenda" style="display: none">
+                                <thead>
+                                    <tr>Horários Disponíveis</tr>
+                                    <tr>
+                                        <th>Dia</th>
+                                        <th>Hora</th>
+                                        <th>Veterinário</th>
+                                        <th>Geriatra</th>
+                                        <th class="actions"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+
+                                </tbody>
+                            </table>
+                            <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        var idAnimal = '@Model.Animal.Id'
+
+    $('#Buscar').click(function () {
+
+    var dataConsulta = $("#DataConsulta").val();
+    var veterinario = $("#Veterinario").val();
+
+        var settings = {
+            "url": '@Url.Action("ConsultaAgendaDisponivel", "Agendamento")?' + `idAnimal=${idAnimal}&dataAgendamento=${dataConsulta}&idVeterinario=${veterinario}`,
+    "method": "GET",
+    "timeout": 0,
+    "headers": {
+    "Content-Type": "application/json"
+            },
+
+        };
+
+    $.ajax(settings).done(function (response) {
+        CarregarTabela(response);
+    });
+    })
+
+        function CarregarTabela(model) {
+            var tabela = $("#TabelaAgenda");
+            var tbody = $("#TabelaAgenda tbody");
+            var trs = '';
+
+            for (var i = 0; i < model.length; i++) {
+
+                for (var j = 0; j < model[i].HorariosDiponiveis.length; j++) {
+
+                    trs += `<tr>
+                                        <td>${model[i].Dia}</td>
+                                        <td>${model[i].HorariosDiponiveis[j]}</td>
+                                        <td>${model[i].Veterianario.Nome}</td>
+                                        <td>${model[i].Veterianario.Geriatra? 'Sim': 'Não'}</td>
+                                        <th>
+                                            <div class="col-md-3"><a  onclick="AgendarConsulta('${model[i].Dia}','${model[i].HorariosDiponiveis[j]}', '${model[i].Veterianario.Id}')" class="btn btn-primary pull-right">Marcar</a></div>
+                                        </th>
+                                    </tr>`
+                }
+            }
+
+            tbody.html(trs);
+            tabela.show();
+
+        }
+
+        function AgendarConsulta(dia, horario, IdVeterinario) {
+
+        }
+    </script>
+
+}

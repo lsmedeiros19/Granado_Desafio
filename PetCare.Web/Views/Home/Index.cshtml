@@ -1,0 +1,109 @@
+﻿<header class="masthead bg-primary text-white text-center">
+    <div class="container d-flex align-items-center flex-column">
+        <!-- Masthead Avatar Image-->
+        <img class="masthead-avatar mb-5" src="assets/img/avataaars.svg" alt="" />
+        <!-- Masthead Heading-->
+        <h2 class="masthead-heading text-uppercase mb-0">Bem vindo a PET CARE</h2>
+        <h5>Tudo o que precisa para cuidar da saúde do seu pet</h5>
+        <!-- Icon Divider-->
+        <div class="divider-custom divider-light">
+            <div class="divider-custom-line"></div>
+            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+            <div class="divider-custom-line"></div>
+        </div>
+    </div>
+    <table align="center">
+        <tr>
+            <td><button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modalJaSouCadastrado">Já sou Cadastrado</button></td>
+            <td><a href="@Url.Action("Index","CadastroCliente")" class="btn btn-outline-dark"> Cadastre-se </a></td>
+
+        </tr>
+    </table>
+</header>
+
+<div class="modal fade" id="modalJaSouCadastrado" tabindex="-1" role="dialog" aria-labelledby="modalJaSouCadastradoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalJaSouCadastradoLabel">Login</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label for="txtcpf" class="col-form-label">Informe seu CPF</label>
+                    <input type="text" class="form-control" id="txtcpf" maxlength="14" onkeypress="formatar('###.###.###-##', this);" />
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Sair</button>
+                <a onclick="logarCliente()" class="btn btn-primary">Entrar</a>
+            </div>
+            <div class="form-group">
+                <label for="lblMensagemErro" id="lblMensagemErro" class="col-form-label"></label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalLoginRestrito" tabindex="-1" role="dialog" aria-labelledby="modalLoginRestrito" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLoginRestritoLabel">Acesso de Funcionário</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="txtlogin" class="col-form-label">Login</label>
+                        <input type="text" class="form-control" id="txtlogin" />
+                    </div>
+                    <div class="form-group">
+                        <label for="txtsenha" class="col-form-label">Senha</label>
+                        <input type="password" class="form-control" id="txtsenha" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Sair</button>
+                <a onclick="logarFuncionario()" class="btn btn-primary">Entrar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        function logarCliente() {
+            var cpf = $("#txtcpf").val();
+
+            var settings = {
+                "url": "@Url.Action("ObterClientePorCpf", "Cliente")?cpf=" + cpf,
+                "method": "GET",
+                "timeout": 0,
+            };
+
+            $.ajax(settings).done(function (response) {
+                console.log(response);
+                var url = '@Url.Action("Inicio", "AreaLogadaCliente", new { id = "-1" })';
+
+                window.location.href = url.replace("-1", response.Id);
+            }).fail(function (response) {
+                $("#lblMensagemErro").text(response);
+            }
+            );
+
+        }
+
+        function logarFuncionario() {
+            window.location.href = '@Url.Action("Inicio", "AreaLogadaFuncionario")'
+        }
+
+    </script>
+}

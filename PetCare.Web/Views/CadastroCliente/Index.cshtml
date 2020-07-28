@@ -1,0 +1,205 @@
+﻿<div class="masthead">
+    <div class="container d-flex flex-column">
+
+        <div class="form-row">
+            <div class="form-group ">
+                <h3>CADASTRO DE CLIENTE</h3>
+            </div>
+        </div>
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="Cpf">CPF</label>
+                    <input type="text" class="form-control" id="Cpf" maxlength="11" /> @*onkeypress="formatar('###.###.###-##', this);"*@
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="Nome">Nome</label>
+                    <input type="text" class="form-control" id="Nome" />
+                </div>
+                <div class="col-md-4 align-self-end" style="margin-bottom:1rem">
+                    <button type="button" id="btnIncluirAnimal" class="btn btn-outline-dark align-bottom float-right" data-toggle="modal" data-target="#modalAnimal">+ Incluir Animal</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="lblMensagemErro" id="lblMensagemErro" class="col-form-label"></label>
+            </div>
+        </form>
+        <div id="listaAnimal">
+
+            <div class="table-responsive col-md-12">
+                <table class="table table-striped" cellspacing="0" cellpadding="0" style="display:none">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Idade</th>
+                            <th>Tipo</th>
+                            <th class="actions">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <br />
+                <input type="button" class="btn btn-primary float-right" value="Salvar Cadatro" id="Salvar" />
+                <br />
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalAnimal" tabindex="-1" role="dialog" aria-labelledby="modalAnimal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAnimalLabel">Cadastro de Animal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formModalAnimal">
+                        <div class="form-group">
+                            <label for="NomeAnimal" class="col-form-label">Nome</label>
+                            <input type="text" class="form-control" id="NomeAnimal" />
+                        </div>
+                        <div class="form-group">
+                            <label for="txtidade" class="col-form-label">Idade</label>
+                            <input type="number" class="form-control" id="IdadeAnimal" />
+                        </div>
+                        <div class="form-group">
+                            <label for="txtidade" class="col-form-label">Animal</label>
+                            <select class="browser-default custom-select" id="TipoAnimal">
+                                <option selected disabled></option>
+                                <option value="1">Cachorro</option>
+                                <option value="2">Gato</option>
+                                <option value="3">Hamster</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-primary" value="Salvar" onclick="AdcionarAnimal()" id="SalvarAnimal" />
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script type="text/javascript">
+        var pets = [];
+
+        var ID = function () {
+            // Math.random should be unique because of its seeding algorithm.
+            // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+            // after the decimal.
+            return '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+
+
+      function AdcionarAnimal () {
+            var nomeAnimal = $("#NomeAnimal").val();
+            var idadeAnimal = $("#IdadeAnimal").val();
+            var tipoAnimal = $("#TipoAnimal").val();
+            var descricaoTipo = $("#TipoAnimal").find(":selected").text();
+
+            var pet = { Key: ID(),  Nome: nomeAnimal, Idade: idadeAnimal, Tipo: tipoAnimal, DescricaoTipo: descricaoTipo };
+            pets.push(pet);
+            AtualizarTabelaPets();
+          $("#modalAnimal").modal('hide');
+          $("#formModalAnimal").each(function () {
+              this.reset();
+          });
+        };
+
+        function AtualizarTabelaPets() {
+            if (pets.length > 0) {
+
+                var tbody = $("#listaAnimal table tbody");
+                var trs = '';
+                for (var i = 0; i < pets.length; i++) {
+                    trs += `<tr >
+                            <td>${pets[i].Nome}</td>
+                            <td>${pets[i].Idade}</td>
+                            <td>${pets[i].DescricaoTipo}</td>
+                            <td class="actions">
+                                <a class="btn btn-danger btn-xs"  data-toggle="modal" onclick="ExcluirAnimal('${ pets[i].Key }')" data-target="#delete-modal">Excluir</a>
+                            </td>
+                            </tr>`;
+                }
+                tbody.html(trs);
+                $("#listaAnimal table").show();
+
+            } else {
+                $("#listaAnimal table").hide();
+            }
+        }
+
+    $('#Salvar').click(function () {
+
+        var cpf = $("#Cpf").val();
+        var nomeCliente = $("#Nome").val();
+        var cliente = { "Nome": nomeCliente, "Cpf": cpf }
+
+        var settings = {
+            "url": '@Url.Action("CadastrarCliente", "Cliente")',
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": JSON.stringify(cliente),
+        };
+
+
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+            SalvarAnimal(response.Id);
+        });
+    })
+
+        function SalvarAnimal(idCliente) {
+
+            var animais = []
+            for (var i = 0; i < pets.length; i++) {
+                animais.push({ "IdCliente": idCliente, "Nome": pets[i].Nome, "Idade": pets[i].Idade, "Tipo": pets[i].Tipo })
+            }
+            var settings = {
+                "url": '@Url.Action("CadastrarAnimal", "Animal")',
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify(animais),
+            };
+
+            $.ajax(settings).done(function (response) {
+                var url = '@Url.Action("Inicio", "AreaLogadaCliente", new { id = "-1" })';
+                window.location.href = url.replace("-1", idCliente);
+            }).fail(function (response) {
+                $("#lblMensagemErro").text(response);
+            }
+            );
+        }
+
+        function ExcluirAnimal(key) {
+            var newPets = pets.filter(x => {
+                return x.Key != key;
+            })
+            pets = newPets;
+            AtualizarTabelaPets();
+        }
+    </script>
+
+}
+
+
